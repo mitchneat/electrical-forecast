@@ -1,11 +1,21 @@
-# # checking for correlation
-# print("\n🔗 Correlation Analysis:")
-# print(df_long.corr())
-
+# import pandas as pd
+# import numpy as np
+# import matplotlib.pyplot as plt 
 # import tensorflow as tf
 # from tensorflow.keras.models import Sequential
 # from tensorflow.keras.layers import LSTM, Dense
 # from sklearn.preprocessing import MinMaxScaler
+
+
+# '''
+# #############################
+# ############ READ IN DATA and group by day ######################
+# #############################
+# '''
+# df = pd.read_csv("./Cleaned_Data/cleaned_home_energy_usage.csv")
+# df['Timestamp'] = pd.to_datetime(df['Timestamp'])
+# df = df.set_index("Timestamp")
+
 
 # # Scale data
 # scaler = MinMaxScaler()

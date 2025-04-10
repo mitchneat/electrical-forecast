@@ -138,313 +138,313 @@ with open("energy_usage_plot.json", "w") as f:
 '''
 # show(layout)
 
-# # Rolling stats
-# plt.figure(figsize=(14, 6))
-# plt.plot(df['kWh'], label="kWh Usage", alpha=0.5)
-# plt.plot(df['kWh'].rolling(window=30*48).mean(), label="Rolling Mean (30 days)", color='red')
-# plt.plot(df['kWh'].rolling(window=30*48).std(), label="Rolling Std Dev (30 days)", color='blue')
-# plt.title("Rolling Mean & Standard Deviation")
-# plt.legend()
-# plt.show()
+# Rolling stats
+plt.figure(figsize=(14, 6))
+plt.plot(df['kWh'], label="kWh Usage", alpha=0.5)
+plt.plot(df['kWh'].rolling(window=30*48).mean(), label="Rolling Mean (30 days)", color='red')
+plt.plot(df['kWh'].rolling(window=30*48).std(), label="Rolling Std Dev (30 days)", color='blue')
+plt.title("Rolling Mean & Standard Deviation")
+plt.legend()
+plt.show()
 
-# # ADF Test
-# def adf_test(series):
-#     result = adfuller(series)
-#     print(f"ADF Statistic: {result[0]:.4f}")
-#     print(f"p-value: {result[1]:.4f}")
-#     print(f"Lags Used: {result[2]}")
-#     print(f"Observations Used: {result[3]}")
-#     print("Stationary" if result[1] <= 0.05 else "Non-stationary")
+# ADF Test
+def adf_test(series):
+    result = adfuller(series)
+    print(f"ADF Statistic: {result[0]:.4f}")
+    print(f"p-value: {result[1]:.4f}")
+    print(f"Lags Used: {result[2]}")
+    print(f"Observations Used: {result[3]}")
+    print("Stationary" if result[1] <= 0.05 else "Non-stationary")
 
-# adf_test(df['kWh'].dropna())
-
-
-# '''
-# #############################
-# ############ time series decomposition ############################
-# #############################
-# '''
-
-# # 30 min interval
-# df['kWh'] = df['kWh'].fillna(method='ffill')
-# decomposition = seasonal_decompose(df['kWh'], model='additive', period=30*48)
-# fig, axes = plt.subplots(4, 1, figsize=(14, 10), sharex=True)
-# axes[0].plot(df['kWh'], label='Original', color='seagreen')
-# axes[0].legend()
-# axes[1].plot(decomposition.trend, label='Trend', color='red')
-# axes[1].legend()
-# axes[2].plot(decomposition.seasonal, label='Seasonality', color='blue')
-# axes[2].legend()
-# axes[3].plot(decomposition.resid, label='Residuals', color='gray')
-# axes[3].legend()
-# plt.tight_layout()
-# plt.show()
+adf_test(df['kWh'].dropna())
 
 
-# # daily
-# decomposition = seasonal_decompose(df_daily['kWh'], model='additive', period=30) 
-# fig, axes = plt.subplots(4, 1, figsize=(14, 10), sharex=True)
-# axes[0].plot(df_daily['kWh'], label='Original', color='seagreen')
-# axes[0].legend()
-# axes[1].plot(decomposition.trend, label='Trend', color='red')
-# axes[1].legend()
-# axes[2].plot(decomposition.seasonal, label='Seasonality', color='blue')
-# axes[2].legend()
-# axes[3].plot(decomposition.resid, label='Residuals', color='gray')
-# axes[3].legend()
-# plt.tight_layout()
-# plt.show()
+'''
+#############################
+############ time series decomposition ############################
+#############################
+'''
+
+# 30 min interval
+df['kWh'] = df['kWh'].fillna(method='ffill')
+decomposition = seasonal_decompose(df['kWh'], model='additive', period=30*48)
+fig, axes = plt.subplots(4, 1, figsize=(14, 10), sharex=True)
+axes[0].plot(df['kWh'], label='Original', color='seagreen')
+axes[0].legend()
+axes[1].plot(decomposition.trend, label='Trend', color='red')
+axes[1].legend()
+axes[2].plot(decomposition.seasonal, label='Seasonality', color='blue')
+axes[2].legend()
+axes[3].plot(decomposition.resid, label='Residuals', color='gray')
+axes[3].legend()
+plt.tight_layout()
+plt.show()
 
 
-# '''
-# #############################
-# ############## autocorrelation and partial autocorrelation
-# #############################
-# '''
-
-# # hourly
-# #auto
-# plot_acf(df['kWh'].dropna(), lags=48*30)
-# plt.title("Autocorrelation Function (ACF)")
-# plt.show()
-# # #partial
-# # plot_pacf(df['kWh'].dropna(), lags=48*30)
-# # plt.title("Partial Autocorrelation Function (PACF)")
-# # plt.show()
+# daily
+decomposition = seasonal_decompose(df_daily['kWh'], model='additive', period=30) 
+fig, axes = plt.subplots(4, 1, figsize=(14, 10), sharex=True)
+axes[0].plot(df_daily['kWh'], label='Original', color='seagreen')
+axes[0].legend()
+axes[1].plot(decomposition.trend, label='Trend', color='red')
+axes[1].legend()
+axes[2].plot(decomposition.seasonal, label='Seasonality', color='blue')
+axes[2].legend()
+axes[3].plot(decomposition.resid, label='Residuals', color='gray')
+axes[3].legend()
+plt.tight_layout()
+plt.show()
 
 
-# # daily
-# #auto
-# plot_acf(df_daily['kWh'].dropna(), lags=30)
-# plt.title("Autocorrelation Function (ACF)")
-# plt.show()
-# # #partial
-# # plot_pacf(df['kWh'].dropna(), lags=48*30)
-# # plt.title("Partial Autocorrelation Function (PACF)")
-# # plt.show()
+'''
+#############################
+############## autocorrelation and partial autocorrelation
+#############################
+'''
 
-
-# # weekly
-# #auto
-# plot_acf(df_weekly['kWh'].dropna(), lags=52)
-# plt.title("Autocorrelation Function (ACF)")
+# hourly
+#Autocorrelation
+plot_acf(df['kWh'].dropna(), lags=48*30)
+plt.title("Autocorrelation Function (ACF)")
+plt.show()
+# #partial Autocorrelation
+# plot_pacf(df['kWh'].dropna(), lags=48*30)
+# plt.title("Partial Autocorrelation Function (PACF)")
 # plt.show()
 
 
-# '''
-# ##########################################################################################
-# ####################### ARIMA MODEL #############################################
-# ##########################################################################################
-# '''
-
-# '''
-# #############################
-# ############## daily data
-# #############################
-# '''
-# # Train-Test Split
-# train_size = len(df_daily) - 30  # Keep last 30 days for testing
-# train_data = df_daily.iloc[:train_size]
-# test_data = df_daily.iloc[train_size:]
-
-# # Auto determine ARIMA order
-# auto_model = auto_arima(train_data['kWh'], seasonal=False, trace=True, stepwise=True)
-# order = auto_model.order
-
-# # Fit ARIMA
-# model_arima1 = ARIMA(train_data['kWh'], order=order)
-# fitted_model_a1 = model_arima1.fit()
-
-# print(fitted_model_a1.summary())
-
-# '''
-# #############################
-# ############## 30 min interval model 
-# #############################
-# '''
-# # Train-Test Split
-# train_size2 = len(df) - 30*48  # Keep last 30 days for testing
-# train_data2 = df_daily.iloc[:train_size2]
-# test_data2 = df_daily.iloc[train_size2:]
-
-# # Auto determine ARIMA order
-# auto_model_30t = auto_arima(train_data2['kWh'], seasonal=False, trace=True, stepwise=True)
-# order = auto_model_30t.order
-
-# # Fit ARIMA
-# model_arima2 = ARIMA(train_data2['kWh'], order=order)
-# fitted_model_a2 = model_arima2.fit()
-
-# print(fitted_model_a2.summary())
-# # model is not as good, I will be using the daily model for forecasting 
-
-
-# '''
-# #############################
-# ############### testing output of model ##################
-# #############################
-# '''
-
-# ######## check residuals for autocorrelation
-
-# residuals_a1 = fitted_model_a1.resid
-
-# print(f"Residuals mean: {residuals_a1.mean()}")
-# print(f"Residuals std: {residuals_a1.std()}")
-# print(f"Residuals head: {residuals_a1.head()}")
-
-# # ACF plot
-# plot_acf(residuals_a1, lags=30)  
-# plt.title("Autocorrelation of Residuals")
+# daily
+#Autocorrelation
+plot_acf(df_daily['kWh'].dropna(), lags=30)
+plt.title("Autocorrelation Function (ACF)")
+plt.show()
+# #partial Autocorrelation
+# plot_pacf(df['kWh'].dropna(), lags=48*30)
+# plt.title("Partial Autocorrelation Function (PACF)")
 # plt.show()
-# # plt.close()
-
-# # Ljung-Box Test
-# ljung_box_test = acorr_ljungbox(residuals_a1, lags=30)
-# print(f"Ljung-Box test p-values: {ljung_box_test['lb_pvalue']}")
-# """
-# The p-values from the Ljung-Box test suggest that the residuals do not exhibit significant autocorrelation at most lags.
-# This is generally a good sign because it implies that the model has captured most of the temporal structure in the data
-# """
 
 
-# '''
-# #############################
-# ################ checking resuidual distribution 
-# #############################
-# '''
-
-# # qq plot
-# stats.probplot(residuals_a1, dist="norm", plot=plt)
-# plt.title('Q-Q Plot for Residuals')
-# plt.show()
-# # plt.close()
+# weekly
+#auto
+plot_acf(df_weekly['kWh'].dropna(), lags=52)
+plt.title("Autocorrelation Function (ACF)")
+plt.show()
 
 
-# # Histogram for residuals
-# sns.histplot(residuals_a1, kde=True)
-# plt.title('Histogram of Residuals')
-# plt.show()
-# # plt.close()
+'''
+##########################################################################################
+####################### ARIMA MODEL #############################################
+##########################################################################################
+'''
+
+'''
+#############################
+############## daily data
+#############################
+'''
+# Train-Test Split
+train_size = len(df_daily) - 30  # Keep last 30 days for testing
+train_data = df_daily.iloc[:train_size]
+test_data = df_daily.iloc[train_size:]
+
+# Auto determine ARIMA order
+auto_model = auto_arima(train_data['kWh'], seasonal=False, trace=True, stepwise=True)
+order = auto_model.order
+
+# Fit ARIMA
+model_arima1 = ARIMA(train_data['kWh'], order=order)
+fitted_model_a1 = model_arima1.fit()
+
+print(fitted_model_a1.summary())
+
+'''
+#############################
+############## 30 min interval model 
+#############################
+'''
+# Train-Test Split
+train_size2 = len(df) - 30*48  # Keep last 30 days for testing
+train_data2 = df_daily.iloc[:train_size2]
+test_data2 = df_daily.iloc[train_size2:]
+
+# Auto determine ARIMA order
+auto_model_30t = auto_arima(train_data2['kWh'], seasonal=False, trace=True, stepwise=True)
+order = auto_model_30t.order
+
+# Fit ARIMA
+model_arima2 = ARIMA(train_data2['kWh'], order=order)
+fitted_model_a2 = model_arima2.fit()
+
+print(fitted_model_a2.summary())
+# model is not as good, I will be using the daily model for forecasting 
 
 
-# '''
-# ##########################################################################################
-# ####################### SARIMA MODEL #############################################
-# ##########################################################################################
-# '''
+'''
+#############################
+############### testing output of model ##################
+#############################
+'''
 
-# # model_sarima = SARIMAX(df['kWh'], 
-# #                 order=(1, 1, 1),  # ARIMA (p, d, q)
-# #                 seasonal_order=(1, 1, 1, 365),  # Seasonal ARIMA (P, D, Q, s)
-# #                 enforce_stationarity=False, 
-# #                 enforce_invertibility=False)
+######## check residuals for autocorrelation
 
-# # # Fit the model
-# # fitted_model_sarima = model_sarima.fit(disp=False)
+residuals_a1 = fitted_model_a1.resid
 
-# # # Print model summary
-# # print(fitted_model_sarima.summary())
+print(f"Residuals mean: {residuals_a1.mean()}")
+print(f"Residuals std: {residuals_a1.std()}")
+print(f"Residuals head: {residuals_a1.head()}")
 
-# # print('============================================')
+# ACF plot
+plot_acf(residuals_a1, lags=30)  
+plt.title("Autocorrelation of Residuals")
+plt.show()
+# plt.close()
 
-# # model_sarima = SARIMAX(df_daily['kWh'], 
-# #                 order=(1, 1, 1),  # ARIMA (p, d, q)
-# #                 seasonal_order=(1, 1, 1, 90),  # Seasonal ARIMA (P, D, Q, s)
-# #                 enforce_stationarity=False, 
-# #                 enforce_invertibility=False)
-
-# # # Fit the model
-# # fitted_model_sarima = model_sarima.fit(disp=False)
-
-# # # Print model summary
-# # print(fitted_model_sarima.summary())
-# # not enough data I will use the ARMIA model
-
-# """
-# Not enough data for SARIMA yearly model, would like to have 2/3 cycles and I have just over a year
-
-# """
-
-# '''
-# ############################################################
-# ############### forecasting with ARIMA ########################
-# ############################################################
-# '''
-# '''
-# #############################
-# ################ basic forecast
-# #############################
-# '''
-# # Forecast Next 30 Days
-# forecast = fitted_model_a1.forecast(steps=30)
-
-# # Compare Forecast vs Actual
-# actual = df_daily['kWh'].iloc[-30:].values 
-# mae = mean_absolute_error(actual, forecast)
-# rmse = np.sqrt(mean_squared_error(actual, forecast))
-# mape = np.mean(np.abs((actual - forecast) / actual)) * 100
-# print(f"Mean Absolute Error (MAE): {mae:.4f}")
-# print(f"Root Mean Squared Error (RMSE): {rmse:.4f}")
-# print(f"Mean Absolute Percentage Error (MAPE): {mape:.4f}")
-
-# # summing per month to see difference
-# total_forecast = round(forecast.sum(), 2)
-# total_actual = actual.sum()
-# print(f"Total Forecasted Usage for the month: {total_forecast} kWh")
-# print(f"Total Actual Usage for the month: {total_actual} kWh")
-
-# # Plot Results
-# plt.figure(figsize=(12, 5))
-# plt.plot(df_daily.index, df_daily['kWh'], label="Actual")
-# plt.plot(df_daily.index[-30:], forecast, label="Forecast", linestyle='dashed', color='red')
-# plt.legend()
-# plt.title("ARIMA Forecast vs Actual Data")
-# plt.show()
-# # plt.close()
+# Ljung-Box Test
+ljung_box_test = acorr_ljungbox(residuals_a1, lags=30)
+print(f"Ljung-Box test p-values: {ljung_box_test['lb_pvalue']}")
+"""
+The p-values from the Ljung-Box test suggest that the residuals do not exhibit significant autocorrelation at most lags.
+This is generally a good sign because it implies that the model has captured most of the temporal structure in the data
+"""
 
 
+'''
+#############################
+################ checking resuidual distribution 
+#############################
+'''
 
-# '''
-# #############################
-# ############### rolling forecast
-# #############################
-# '''
-# train, test = df_daily['kWh'][:-30], df_daily['kWh'][-30:]
-# predictions = []  # Store forecasts
-# forecasted_values = []
-# # Rolling forecast loop
-# for t in range(len(test)):
-#     model = ARIMA(train, order=(1,1,1), enforce_invertibility=False, enforce_stationarity=False) 
-#     model_fit = model.fit()
+# qq plot
+stats.probplot(residuals_a1, dist="norm", plot=plt)
+plt.title('Q-Q Plot for Residuals')
+plt.show()
+# plt.close()
+
+
+# Histogram for residuals
+sns.histplot(residuals_a1, kde=True)
+plt.title('Histogram of Residuals')
+plt.show()
+# plt.close()
+
+
+'''
+##########################################################################################
+####################### SARIMA MODEL #############################################
+##########################################################################################
+'''
+
+# model_sarima = SARIMAX(df['kWh'], 
+#                 order=(1, 1, 1),  # ARIMA (p, d, q)
+#                 seasonal_order=(1, 1, 1, 365),  # Seasonal ARIMA (P, D, Q, s)
+#                 enforce_stationarity=False, 
+#                 enforce_invertibility=False)
+
+# # Fit the model
+# fitted_model_sarima = model_sarima.fit(disp=False)
+
+# # Print model summary
+# print(fitted_model_sarima.summary())
+
+# print('============================================')
+
+# model_sarima = SARIMAX(df_daily['kWh'], 
+#                 order=(1, 1, 1),  # ARIMA (p, d, q)
+#                 seasonal_order=(1, 1, 1, 90),  # Seasonal ARIMA (P, D, Q, s)
+#                 enforce_stationarity=False, 
+#                 enforce_invertibility=False)
+
+# # Fit the model
+# fitted_model_sarima = model_sarima.fit(disp=False)
+
+# # Print model summary
+# print(fitted_model_sarima.summary())
+# not enough data I will use the ARMIA model
+
+"""
+Not enough data for SARIMA yearly model, would like to have 2/3 cycles and I have just over a year
+
+"""
+
+'''
+############################################################
+############### forecasting with ARIMA ########################
+############################################################
+'''
+'''
+#############################
+################ basic forecast
+#############################
+'''
+# Forecast Next 30 Days
+forecast = fitted_model_a1.forecast(steps=30)
+
+# Compare Forecast vs Actual
+actual = df_daily['kWh'].iloc[-30:].values 
+mae = mean_absolute_error(actual, forecast)
+rmse = np.sqrt(mean_squared_error(actual, forecast))
+mape = np.mean(np.abs((actual - forecast) / actual)) * 100
+print(f"Mean Absolute Error (MAE): {mae:.4f}")
+print(f"Root Mean Squared Error (RMSE): {rmse:.4f}")
+print(f"Mean Absolute Percentage Error (MAPE): {mape:.4f}")
+
+# summing per month to see difference
+total_forecast = round(forecast.sum(), 2)
+total_actual = actual.sum()
+print(f"Total Forecasted Usage for the month: {total_forecast} kWh")
+print(f"Total Actual Usage for the month: {total_actual} kWh")
+
+# Plot Results
+plt.figure(figsize=(12, 5))
+plt.plot(df_daily.index, df_daily['kWh'], label="Actual")
+plt.plot(df_daily.index[-30:], forecast, label="Forecast", linestyle='dashed', color='red')
+plt.legend()
+plt.title("ARIMA Forecast vs Actual Data")
+plt.show()
+# plt.close()
+
+
+
+'''
+#############################
+############### rolling forecast
+#############################
+'''
+train, test = df_daily['kWh'][:-30], df_daily['kWh'][-30:]
+predictions = []  # Store forecasts
+forecasted_values = []
+# Rolling forecast loop
+for t in range(len(test)):
+    model = ARIMA(train, order=(1,1,1), enforce_invertibility=False, enforce_stationarity=False) 
+    model_fit = model.fit()
     
-#     forecast = model_fit.forecast(steps=1)
-#     forecasted_values.append(float(forecast.item()))  
+    forecast = model_fit.forecast(steps=1)
+    forecasted_values.append(float(forecast.item()))  
 
-#     predictions.append(float(forecast.item()))  
+    predictions.append(float(forecast.item()))  
 
-#     train = np.append(train, test.iloc[t].item()) 
+    train = np.append(train, test.iloc[t].item()) 
 
-# # Evaluate performance
-# mae = mean_absolute_error(test, predictions)
-# rmse = np.sqrt(mean_squared_error(test, predictions))
-# mape = np.mean(np.abs((test - predictions) / test)) * 100
-# print(f"Rolling Forecast MAE: {mae:.4f}")
-# print(f"Rolling Forecast RMSE: {rmse:.4f}")
-# print(f"Rolling Forecast MAPE: {mape:.4f}")
+# Evaluate performance
+mae = mean_absolute_error(test, predictions)
+rmse = np.sqrt(mean_squared_error(test, predictions))
+mape = np.mean(np.abs((test - predictions) / test)) * 100
+print(f"Rolling Forecast MAE: {mae:.4f}")
+print(f"Rolling Forecast RMSE: {rmse:.4f}")
+print(f"Rolling Forecast MAPE: {mape:.4f}")
 
-# # sum for month to see difference in prediction 
-# total_forecast_rolling = round(sum(forecasted_values), 2)
-# total_actual_rolling = test.sum()
-# print(f"Total Rolling Forecasted Usage for the month: {total_forecast_rolling} kWh")
-# print(f"Total Actual Usage for the month: {total_actual_rolling} kWh")
+# sum for month to see difference in prediction 
+total_forecast_rolling = round(sum(forecasted_values), 2)
+total_actual_rolling = test.sum()
+print(f"Total Rolling Forecasted Usage for the month: {total_forecast_rolling} kWh")
+print(f"Total Actual Usage for the month: {total_actual_rolling} kWh")
 
-# # plot results for visual
-# plt.figure(figsize=(12, 5))
-# plt.plot(df_daily.index, df_daily['kWh'], label="Actual")
-# plt.plot(df_daily.index[-len(forecasted_values):], forecasted_values, label="Forecast", linestyle='dashed', color='red')
-# plt.ylabel("kWh")
-# plt.legend()
-# plt.title("ARIMA Rolling Forecast vs Actual Data")
-# plt.show()
-# # plt.close()
+# plot results for visual
+plt.figure(figsize=(12, 5))
+plt.plot(df_daily.index, df_daily['kWh'], label="Actual")
+plt.plot(df_daily.index[-len(forecasted_values):], forecasted_values, label="Forecast", linestyle='dashed', color='red')
+plt.ylabel("kWh")
+plt.legend()
+plt.title("ARIMA Rolling Forecast vs Actual Data")
+plt.show()
+# plt.close()
