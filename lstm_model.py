@@ -5,7 +5,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 from tensorflow.keras.optimizers import Adam
 import matplotlib.pyplot as plt
-from datetime import datetime
+from datetime import datetime, timedelta
 from meteostat import Hourly, Point
 from sklearn.model_selection import train_test_split
 
@@ -74,25 +74,65 @@ model = Sequential([
     Dense(1)
 ])
 model.compile(optimizer='adam', loss='mse')
-model.fit(X, y, epochs=10, batch_size=32, validation_split=0.2)
+model.fit(X_train, y_train, epochs=10, batch_size=32, validation_split=0.2)
+
 
 '''
 #############################
 ############ Forecast the next 30 days hourly
 #############################
 '''
+last_month = ml_data[(ml_data['Timestamp'].dt.month == 3) & (ml_data['Timestamp'].dt.year == 2024)]
+weather_by_hour = last_month.groupby('hour')[['temp', 'dwpt', 'rhum', 'wspd']].mean().reset_index()
+weather_by_hour.columns = ['hour', 'temp', 'dwpt', 'rhum', 'wspd']
+weather_by_hour.reset_index(inplace=True)
+
 forecast_hours = 24 * 30
 predictions = []
 current_input = X[-1]
+last_timestamp = ml_data['Timestamp'].iloc[-1]
 
-for _ in range(forecast_hours):
+for i in range(forecast_hours):
+    future_time = last_timestamp + timedelta(hours=i+1)
+    hour = future_time.hour
+    day_of_week = future_time.weekday()
+    month = future_time.month
+
+    # Lookup historical weather for this hour
+    # w = weather_by_hour[weather_by_hour['hour'] == hour].iloc[0].values[1:]
+    w = weather_by_hour.loc[weather_by_hour['hour'] == hour, ['temp', 'dwpt', 'rhum', 'wspd']].iloc[0].values
+
+
+    # Insert into dummy array to scale
+    dummy = np.zeros((1, len(features)))
+    dummy[0, 4:] = w  # weather features start at index 4
+    w_scaled = scaler.transform(dummy)[0, 4:]
+
+    # Time features (manually normalized)
+    hour_norm = hour / 23.0
+    day_norm = day_of_week / 6.0
+    month_norm = month / 12.0
+
+    # Build full input vector
+    new_input = np.hstack((
+        [predictions[-1] if predictions else current_input[-1][0]],  # predicted kWh
+        [hour_norm, day_norm, month_norm],
+        w_scaled
+    ))
+
+    current_input = np.vstack((current_input[1:], new_input))
     pred = model.predict(current_input.reshape(1, *current_input.shape), verbose=0)[0][0]
     predictions.append(pred)
 
-    # Use last known non-kWh features
-    last_features = current_input[-1][1:]
-    new_input = np.hstack(([pred], last_features))
-    current_input = np.vstack((current_input[1:], new_input))
+
+# for _ in range(forecast_hours):
+#     pred = model.predict(current_input.reshape(1, *current_input.shape), verbose=0)[0][0]
+#     predictions.append(pred)
+
+#     # Use last known non-kWh features
+#     last_features = current_input[-1][1:]
+#     new_input = np.hstack(([pred], last_features))
+#     current_input = np.vstack((current_input[1:], new_input))
 
 
 '''
@@ -111,7 +151,7 @@ inv_preds = scaler.inverse_transform(dummy_input)[:, 0]
 ############ plot
 #############################
 '''
-plt.figure(figsize=(12, 4))
+plt.figure(figsize=(15, 5))
 plt.plot(inv_preds)
 plt.title("Predicted Electricity Usage for Next 30 Days (Hourly)")
 plt.xlabel("Hour")
