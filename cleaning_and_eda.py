@@ -14,7 +14,7 @@ from scipy.stats import zscore
 '''
 
 # read in
-df = pd.read_csv("./Input/Home_Energy_Usage.csv")
+df = pd.read_csv("./Input/Home_Energy_Usage_2.csv")
 
 # clean and make long
 df.columns = df.columns.str.replace(" kWH", "", regex=False)
@@ -28,7 +28,7 @@ df_long = df_long.sort_index()
 
 # print and export if needed
 # print('Final DF: ', df_long.head())
-# df_long.to_csv("./Cleaned_Data/cleaned_home_energy_usage.csv")
+# df_long.to_csv("./Cleaned_Data/cleaned_home_energy_usage2.csv")
 
 '''
 #################################################################
@@ -200,4 +200,4 @@ plt.xticks(ticks=range(12), labels=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'J
 '''
 # print and export if needed
 print('Final DF: ', df_long.head())
-# df_long.to_csv("./Cleaned_Data/modified_cleaned_home_energy_usage.csv")
+df_long.to_csv("./Cleaned_Data/modified_cleaned_home_energy_usage2.csv")
